@@ -29,6 +29,7 @@ var (
 	defaultClient    = common.SaneHttpClient()
 	defaultSDKConfig = ldclient.Config{
 		Logging: ldcomponents.NoLogging(),
+		Events:  ldcomponents.NoEvents(),
 	}
 	defaultSDKTimeout  = 10 * time.Second
 	invalidSDKKeyError = "SDK key contains invalid characters"
@@ -88,7 +89,11 @@ func (s Scanner) FromData(ctx context.Context, verify bool, data []byte) (result
 				}
 			} else {
 				// This is a server SDK key. Try to initialize using the SDK.
-				_, err := ldclient.MakeCustomClient(resMatch, defaultSDKConfig, defaultSDKTimeout)
+				client, err := ldclient.MakeCustomClient(resMatch, defaultSDKConfig, defaultSDKTimeout)
+				if client != nil {
+					defer client.Close()
+				}
+
 				if err == nil {
 					s1.Verified = true
 				} else if errors.Is(err, ldclient.ErrInitializationFailed) || err.Error() == invalidSDKKeyError {
