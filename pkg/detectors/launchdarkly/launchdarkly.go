@@ -28,8 +28,9 @@ var _ detectors.Detector = (*Scanner)(nil)
 var (
 	defaultClient    = common.SaneHttpClient()
 	defaultSDKConfig = ldclient.Config{
-		Logging: ldcomponents.NoLogging(),
-		Events:  ldcomponents.NoEvents(),
+		Logging:          ldcomponents.NoLogging(),
+		Events:           ldcomponents.NoEvents(),
+		DiagnosticOptOut: true,
 	}
 	defaultSDKTimeout  = 10 * time.Second
 	invalidSDKKeyError = "SDK key contains invalid characters"
